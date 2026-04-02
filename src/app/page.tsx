@@ -1,65 +1,128 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { useAuth } from '@/lib/auth'
+import Link from 'next/link'
+
+export default function HomePage() {
+  const { user, loading, logout } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-gray-500">加载中...</div>
+      </div>
+    )
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen bg-gray-50">
+      {/* 顶部导航 */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 className="text-xl font-bold text-gray-900">AI客户培训助手</h1>
+          <div className="flex items-center gap-4">
+            {user ? (
+              <>
+                <span className="text-sm text-gray-600">
+                  {user.name || user.email} ({user.role === 'admin' ? '管理员' : '成员'})
+                </span>
+                <Link
+                  href="/admin"
+                  className="text-sm text-blue-600 hover:text-blue-800"
+                >
+                  管理后台
+                </Link>
+                <button
+                  onClick={logout}
+                  className="text-sm text-gray-500 hover:text-gray-700"
+                >
+                  退出
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm text-blue-600 hover:text-blue-800"
+              >
+                登录
+              </Link>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* 主内容 */}
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            欢迎使用AI客户培训助手
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            基于历史成交案例的AI营销培训和对话模拟系统，帮助团队学习营销技巧、提升应对能力。
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* 功能卡片 */}
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* AI对话 */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="text-4xl mb-4">💬</div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">AI智能问答</h3>
+            <p className="text-gray-600 text-sm mb-4">
+              向AI提问，获得基于真实案例的专业建议和应对策略。
+            </p>
+            <Link
+              href="/chat"
+              className="inline-block px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+            >
+              开始对话
+            </Link>
+          </div>
+
+          {/* 案例浏览 */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="text-4xl mb-4">📚</div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">案例浏览</h3>
+            <p className="text-gray-600 text-sm mb-4">
+              按行业、类型筛选查看历史成交案例，学习成功经验。
+            </p>
+            <Link
+              href="/cases"
+              className="inline-block px-4 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700"
+            >
+              浏览案例
+            </Link>
+          </div>
+
+          {/* 模拟训练 */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="text-4xl mb-4">🎭</div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">模拟训练</h3>
+            <p className="text-gray-600 text-sm mb-4">
+              模拟客户场景进行对话练习，提升实战应对能力。
+            </p>
+            <Link
+              href="/training"
+              className="inline-block px-4 py-2 bg-purple-600 text-white text-sm rounded hover:bg-purple-700"
+            >
+              开始训练
+            </Link>
+          </div>
+        </div>
+
+        {/* 快捷链接 */}
+        <div className="mt-12 bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">最近案例</h3>
+          <p className="text-gray-500 text-sm">暂无案例数据，请先导入案例。</p>
         </div>
       </main>
+
+      {/* 底部 */}
+      <footer className="bg-white border-t mt-auto">
+        <div className="max-w-6xl mx-auto px-4 py-4 text-center text-sm text-gray-500">
+          AI客户培训助手 © 2026
+        </div>
+      </footer>
     </div>
-  );
+  )
 }

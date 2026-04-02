@@ -72,11 +72,8 @@ export default function TrainingPage() {
 
 请用自然、真实的方式与销售人员对话，模拟真实客户可能会有的反应和提问。`
 
-      const aiResponse = await chatWithAI([
-        { role: 'system', content: systemPrompt },
-        ...messages,
-        userMessage
-      ])
+      const history = messages.map(m => ({ role: m.role as 'user' | 'assistant', content: m.content }))
+      const aiResponse = await chatWithAI(input, history)
       setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }])
     } catch (err) {
       setMessages(prev => [...prev, { role: 'assistant', content: '抱歉，网络波动，请重试。' }])

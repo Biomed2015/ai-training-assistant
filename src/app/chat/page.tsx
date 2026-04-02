@@ -49,10 +49,12 @@ export default function ChatPage() {
     setError('')
 
     try {
-      const aiResponse = await chatWithAI([...messages, userMessage])
+      const history = messages.map(m => ({ role: m.role as 'user' | 'assistant', content: m.content }))
+      const aiResponse = await chatWithAI(input, history)
       setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }])
-    } catch (err) {
-      setError('AI响应失败，请稍后重试')
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'AI响应失败，请稍后重试'
+      setError(errorMessage)
     }
     setLoading(false)
   }
